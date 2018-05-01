@@ -64,7 +64,9 @@ foreach ( $paths as $path )
 	{
 		try
 		{
-			$directory = new RecursiveDirectoryIterator( $path );
+            $new_files = array();
+
+            $directory = new RecursiveDirectoryIterator( $path );
 			$iterator  = new RecursiveIteratorIterator( $directory );
 			/** @var DirectoryIterator $file */
 			foreach ( $iterator as $file )
@@ -73,14 +75,17 @@ foreach ( $paths as $path )
 				{
 					foreach ( $type as $filename )
 					{
-						if ( $file->getFilename() === $filename )
+						if ( stristr ( $file->getFilename(), $filename ) )
 						{
 							$paths[] = $file->getPath();
+                            $new_files[$key][] = $file->getFilename();
 							continue 3;
 						}
 					}
 				}
 			}
+
+            $files = array_merge( $files, $new_files );
 		}
 		catch ( Exception $e )
 		{
